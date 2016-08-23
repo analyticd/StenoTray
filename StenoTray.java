@@ -416,9 +416,9 @@ public class StenoTray extends JFrame {
                     if (fields.length >= 2) {
                         if (fields[0].trim().length() > 15)
                         if (fields[0].trim().substring(0,15).equals("dictionary_file"))
-                            dictionaryFiles.add(fields[1].trim());
+                            dictionaryFiles.add(makeAbsolute(fields[1].trim()));
                         if (fields[0].trim().equals("log_file"))
-                            logFile = fields[1].trim();
+                            logFile = makeAbsolute(fields[1].trim());
                     }
                 }
                 pConfig.close();
@@ -432,6 +432,12 @@ public class StenoTray extends JFrame {
         } else {
             throw new java.io.FileNotFoundException("Cannot locate plover config file: " + ploverConfig.toString());
         }
+    }
+
+    private String makeAbsolute(String file) {
+	if(!new File(file).isAbsolute())
+	    file = mkPath(PLOVER_DIR, file);
+	return file;
     }
 
     private class Translation {

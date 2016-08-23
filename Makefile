@@ -5,10 +5,13 @@ default: StenoTray.jar
 run: StenoTray.jar
 	java -Djava.ext.dirs=. -Djava.library.path=. StenoTray
 
+clean:
+	rm *.class *.jar
+
 .SUFFIXES: .java .class
 
 # Build jar files from class files.
-StenoTray.jar: *.class
+StenoTray.jar: StenoTray.manifest Dictionary.class MultiTreeMap.class StenoTray.class Tuple.class
 	jar cfm StenoTray.jar StenoTray.manifest *.class
 
 # No special options should be necessary.
