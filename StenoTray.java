@@ -444,7 +444,7 @@ public class StenoTray extends JFrame {
         private String[] history;
         private int histPointer;
         private static final int HIST_SIZE = 50;
-        private String phrase = null;
+        private String phrase = "";
         private boolean glue = false;
         private boolean joinEnd = false;
         public Translation(String input) {
@@ -455,11 +455,11 @@ public class StenoTray extends JFrame {
 	    input = cleanInput(input.trim());
             phrase = processAttributes(input.trim());
         }
-        public String phrase() { return phrase; }
+        public String phrase() { if (phrase != null) return phrase; else return ""; }
         public void add(String stroke) {
             String histBits;
             if (stroke == null || stroke.length() == 0 || stroke.equals("None")) {
-                phrase = null;
+                phrase = "";
                 glue = false;
                 joinEnd = false;
             } else {
@@ -500,8 +500,12 @@ public class StenoTray extends JFrame {
         private String processAttributes(String s) {
 	    glue = false;
 	    joinEnd = false;
-            if (s == null || s.length() == 0) return null;
+            if (s == null || s.length() == 0) return "";
+            // Special commands are too complicated. Ignore them
+            if (s.indexOf("{#") >= 0) return "";
+            // This is (probably) just a normal word.
             if ((s.charAt(0) != '{') || (s.charAt(s.length()-1) != '}')) return s;
+            // Otherwise, check for glue
             int trimStart = 1;
             int trimEnd = 1;
             glue=hasGlue(s);
@@ -510,7 +514,12 @@ public class StenoTray extends JFrame {
             if (joinStart(s)) trimStart++;
             if (joinEnd) trimEnd++;
             if (trimStart == s.length()-trimEnd) return "";
-            return s.substring(trimStart,s.length()-trimEnd);
+            String res = s.substring(trimStart,s.length()-trimEnd).trim();
+            if (res.equals("")) {
+                glue = false;
+                joinEnd = false;
+            }
+            return res;
         }
         private boolean hasGlue(String s) {
             if (s == null || s.length()<2) return false;
