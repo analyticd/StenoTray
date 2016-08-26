@@ -452,6 +452,7 @@ public class StenoTray extends JFrame {
             for (int i=0; i < HIST_SIZE; i++)
                 history[i]="00";
             histPointer = 0;
+	    input = cleanInput(input.trim());
             phrase = processAttributes(input.trim());
         }
         public String phrase() { return phrase; }
@@ -462,7 +463,8 @@ public class StenoTray extends JFrame {
                 glue = false;
                 joinEnd = false;
             } else {
-                if ((joinStart(stroke)) || (glue && hasGlue(stroke))) {
+	        stroke = cleanInput(stroke);
+                if ((joinStart(stroke)) || (glue && hasGlue(stroke)) || joinEnd) {
                     phrase += processAttributes(stroke);
                 } else {
                     phrase = processAttributes(stroke);
@@ -486,9 +488,18 @@ public class StenoTray extends JFrame {
             histPointer = (histPointer + 1) % HIST_SIZE;
             if (DEBUG) System.out.println("<-"+stroke+" ("+history[(histPointer) % HIST_SIZE]+")");
         }
+	private String cleanInput(String s) {
+		if (s == null || s.length() < 3) return s;
+		String stroke = s;
+		if (stroke.substring(0,3).equals("{>}"))
+		    stroke = stroke.substring(3);
+		if (stroke.length() >= 4 &&stroke.substring(stroke.length() - 4).equals("{-|}"))
+		    stroke = stroke.substring(0, stroke.length() - 4);
+		return stroke;
+        }
         private String processAttributes(String s) {
-            glue = false;
-            joinEnd = false;
+	    glue = false;
+	    joinEnd = false;
             if (s == null || s.length() == 0) return null;
             if ((s.charAt(0) != '{') || (s.charAt(s.length()-1) != '}')) return s;
             int trimStart = 1;
@@ -498,6 +509,7 @@ public class StenoTray extends JFrame {
             if (glue) trimStart++;
             if (joinStart(s)) trimStart++;
             if (joinEnd) trimEnd++;
+            if (trimStart == s.length()-trimEnd) return "";
             return s.substring(trimStart,s.length()-trimEnd);
         }
         private boolean hasGlue(String s) {
