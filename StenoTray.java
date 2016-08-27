@@ -513,7 +513,7 @@ public class StenoTray extends JFrame {
             if (glue) trimStart++;
             if (joinStart(s)) trimStart++;
             if (joinEnd) trimEnd++;
-            if (trimStart == s.length()-trimEnd) return "";
+            if (trimStart >= s.length()-trimEnd) return "";
             String res = s.substring(trimStart,s.length()-trimEnd).trim();
             if (res.equals("")) {
                 glue = false;
