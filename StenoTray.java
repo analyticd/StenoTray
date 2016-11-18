@@ -241,7 +241,15 @@ public class StenoTray extends JFrame {
         if (line.indexOf("Translation((") == -1 || true) { // old style log
             if (line.indexOf("*Translation") >= 0) { // delete stroke
                 line = line.substring(line.indexOf("Translation")+12,line.length()-1);
-                translation.delete(line.split(":",2)[1].trim());
+                String stri = line.split(":",2)[1].trim();
+                if (stri.length() > 1 &&
+                        stri.charAt(0) == '"' &&
+                        stri.charAt(stri.length() - 1) == '"')
+                {
+                    stri = stri.substring(1, stri.length() - 2);
+                    stri.replaceAll("\\\"", "\"");
+                }
+                translation.delete(stri);
                 String rawstroke = line.split(":",2)[0].trim();
                 rawstroke = rawstroke.substring(1,rawstroke.length()-1);
                 for(String str : rawstroke.split(",")) {
@@ -253,7 +261,15 @@ public class StenoTray extends JFrame {
                 return stroke;
             } else { 
                 line = line.substring(line.indexOf("Translation")+12,line.length()-1);
-                translation.add(   line.split(":",2)[1].trim());
+                String stri = line.split(":",2)[1].trim();
+                if (stri.length() > 1 &&
+                        stri.charAt(0) == '"' &&
+                        stri.charAt(stri.length() - 1) == '"')
+                {
+                    stri = stri.substring(1, stri.length() - 1);
+                    stri.replaceAll("\\\"", "\"");
+                }
+                translation.add(   stri);
                 String rawstroke = line.split(":",2)[0].trim();
                 rawstroke = rawstroke.substring(1,rawstroke.length()-1);
                 for(String str : rawstroke.split(",")) {
