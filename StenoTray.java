@@ -52,7 +52,7 @@ public class StenoTray extends JFrame {
 
     // global variables
     private static List<String> dictionaryFiles = new ArrayList<String>();
-    private static String logFile = mkPath(PLOVER_DIR, "plover.log");
+    private static String logFile = mkPath(PLOVER_DIR, "strokes.log");
     private static Dictionary dictionary; // the main dictionary
     private int limit = 0; // limit the number of responses
     private boolean simplify = false;
